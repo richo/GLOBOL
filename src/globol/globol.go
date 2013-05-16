@@ -116,7 +116,7 @@ func main() {
             /** END STRING HANDLING **/
 
             if lexer.IsAtomSeperator(char) {
-                // Do something with the atom... XXX TODO
+                push_atom(lexer.TOK_ATOM, atom_buffer.Bytes())
                 new_atom_buffer()
             } else {
                 add_to_buf(char)

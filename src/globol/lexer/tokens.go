@@ -7,6 +7,7 @@ const (
 )
 
 const (
+    TOK_ATOM = iota
     TOK_INDENT = iota
     TOK_COMMENT = iota
     TOK_STRING = iota
