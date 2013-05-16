@@ -20,13 +20,20 @@ const (
     CTX_STRING = iota
 )
 
+const (
+    MARK_NEWLINE = 10
+    MARK_SPACE = 32
+    MARK_COMMA = 44
+)
+
 func IsAtomSeperator(c byte) bool {
     var (
         ret bool
     )
-    ret = c == 32 /* space */ ||
-          c == 44 /* comma */ ||
-          c == 10 /* newline */
+
+    ret = c == MARK_SPACE ||
+          c == MARK_COMMA ||
+          c == MARK_NEWLINE
 
     return ret
 }
