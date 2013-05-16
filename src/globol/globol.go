@@ -85,9 +85,11 @@ func main() {
                 // Work out if we need out of this string
                 if char == lexer.DELIM_STRING_END &&
                     look_back(1) == lexer.DELIM_STRING_END {
+                        // Drop the last character from our buffer
+                        _ = atom_buffer.Next(1)
                         exit_ctx()
                         current_token.Type = lexer.TOK_STRING
-                        current_token.Content = atom_buffer.Bytes()
+                        current_token.Content = atom_buffer.Bytes()[:atom_buffer.Len()-1]
                         fmt.Println("Parsed String", string(current_token.Content))
                         advance_token()
                         new_atom_buffer()
