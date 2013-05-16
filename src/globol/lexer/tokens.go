@@ -14,6 +14,7 @@ const (
 )
 
 const (
+    CTX_NEWLINE = iota // Always first, treated as a mask
     CTX_MAIN = iota
     CTX_FUNC = iota
     CTX_STRING = iota
@@ -24,7 +25,8 @@ func IsAtomSeperator(c byte) bool {
         ret bool
     )
     ret = c == 32 /* space */ ||
-          c == 44 /* comma */
+          c == 44 /* comma */ ||
+          c == 10 /* newline */
 
     return ret
 }
