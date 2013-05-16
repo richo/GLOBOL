@@ -14,6 +14,8 @@ import (
     "globol/lexer"
 )
 
+const CONTEXT_STACK_DEPTH = 33
+
 func main() {
 
     var (
@@ -21,7 +23,7 @@ func main() {
         i int
         char byte
         atom_buffer bytes.Buffer
-        ctx [33]int // 32 functions plus a string
+        ctx [CONTEXT_STACK_DEPTH]int // 32 functions plus a string
         ctx_depth int
         atom_idx int = 0
         /* err error */
@@ -54,6 +56,7 @@ func main() {
     }
 
     enter_ctx := func(c int) {
+        /* assert(ctx_depth < CONTEXT_STACK_DEPTH) */
         ctx_depth++
         ctx[ctx_depth] = c
     }
