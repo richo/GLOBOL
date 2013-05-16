@@ -73,6 +73,14 @@ func main() {
         current_token = new_tok
     }
 
+    push_atom := func(tok_type int, content []byte) {
+        fmt.Println("Parsed Token:", tok_type, string(content))
+        current_token.Type = tok_type
+        current_token.Content = content
+        advance_token()
+        new_atom_buffer()
+    }
+
     file, _ = os.Open(os.Args[1])
     for {
         n, err := file.Read(buf)
@@ -91,11 +99,7 @@ func main() {
                         // Drop the last character from our buffer
                         _ = atom_buffer.Next(1)
                         exit_ctx()
-                        current_token.Type = lexer.TOK_STRING
-                        current_token.Content = atom_buffer.Bytes()[:atom_buffer.Len()-1]
-                        fmt.Println("Parsed String", string(current_token.Content))
-                        advance_token()
-                        new_atom_buffer()
+                        push_atom(lexer.TOK_STRING, atom_buffer.Bytes()[:atom_buffer.Len()-1])
                 } else { // Just an ordinary char in a string
                     add_to_buf(char)
                 }
@@ -108,6 +112,8 @@ func main() {
                     continue
                 }
             }
+
+            /** END STRING HANDLING **/
 
             if lexer.IsAtomSeperator(char) {
                 // Do something with the atom... XXX TODO
