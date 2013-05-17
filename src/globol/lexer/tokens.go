@@ -11,6 +11,7 @@ const (
     TOK_INDENT = iota
     TOK_COMMENT = iota
     TOK_STRING = iota
+    TOK_ENDSTATEMENT = iota
 )
 
 const (
@@ -25,6 +26,8 @@ const (
     MARK_SPACE = 32
     MARK_COMMA = 44
 )
+
+const MARK_INDENT = MARK_SPACE
 
 func IsAtomSeperator(c byte) bool {
     var (

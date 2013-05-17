@@ -73,12 +73,14 @@ func main() {
         current_token = new_tok
     }
 
-    push_atom := func(tok_type int, content []byte) {
+    push_atom := func(tok_type int, content []byte, reset bool) {
         fmt.Println("Parsed Token:", tok_type, string(content))
         current_token.Type = tok_type
         current_token.Content = content
         advance_token()
-        new_atom_buffer()
+        if (reset) {
+            new_atom_buffer()
+        }
     }
 
     file, _ = os.Open(os.Args[1])
@@ -99,7 +101,7 @@ func main() {
                         // Drop the last character from our buffer
                         _ = atom_buffer.Next(1)
                         exit_ctx()
-                        push_atom(lexer.TOK_STRING, atom_buffer.Bytes()[:atom_buffer.Len()-1])
+                        push_atom(lexer.TOK_STRING, atom_buffer.Bytes()[:atom_buffer.Len()-1], true)
                 } else { // Just an ordinary char in a string
                     add_to_buf(char)
                 }
@@ -115,12 +117,24 @@ func main() {
 
             /** END STRING HANDLING **/
 
+            /* Safe to assume we're not in a string */
+            if (char == lexer.MARK_NEWLINE) {
+                ctx[ctx_depth] = ctx[ctx_depth] | lexer.CTX_NEWLINE
+                push_atom(lexer.TOK_ENDSTATEMENT, []byte(";;"), false)
+
+            } else if (ctx[ctx_depth] & lexer.CTX_NEWLINE == lexer.CTX_NEWLINE) {
+                if (char == lexer.MARK_INDENT) &&
+                    look_back(1) == lexer.MARK_INDENT {
+                        push_atom(lexer.TOK_INDENT, []byte("||"), true)
+                }
+            }
+
             if lexer.IsAtomSeperator(char) {
-                push_atom(lexer.TOK_ATOM, atom_buffer.Bytes())
-                new_atom_buffer()
+                push_atom(lexer.TOK_ATOM, atom_buffer.Bytes(), true)
             } else {
                 add_to_buf(char)
             }
+
         }
         // Check if we've hit an atom seperator
 
