@@ -117,23 +117,26 @@ func main() {
 
             /** END STRING HANDLING **/
 
-            /* Safe to assume we're not in a string */
-            if (char == lexer.MARK_NEWLINE) {
-                ctx[ctx_depth] = ctx[ctx_depth] | lexer.CTX_NEWLINE
-                push_atom(lexer.TOK_ENDSTATEMENT, []byte(";;"), false)
+            if lexer.IsAtomSeperator(char) {
+                push_atom(lexer.TOK_ATOM, atom_buffer.Bytes(), true)
+                if (char == lexer.MARK_NEWLINE) {
+                    ctx[ctx_depth] = ctx[ctx_depth] | lexer.CTX_NEWLINE
+                    push_atom(lexer.TOK_ENDSTATEMENT, []byte(";;"), false)
+                }
+                continue
+            }
 
-            } else if (ctx[ctx_depth] & lexer.CTX_NEWLINE == lexer.CTX_NEWLINE) {
+            /* Safe to assume we're not in a string */
+
+            if (ctx[ctx_depth] & lexer.CTX_NEWLINE == lexer.CTX_NEWLINE) {
                 if (char == lexer.MARK_INDENT) &&
                     look_back(1) == lexer.MARK_INDENT {
                         push_atom(lexer.TOK_INDENT, []byte("||"), true)
+                        continue
                 }
             }
 
-            if lexer.IsAtomSeperator(char) {
-                push_atom(lexer.TOK_ATOM, atom_buffer.Bytes(), true)
-            } else {
-                add_to_buf(char)
-            }
+            add_to_buf(char)
 
         }
         // Check if we've hit an atom seperator
