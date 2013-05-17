@@ -1,4 +1,4 @@
-GLOBAL
+GLOBOL
 ======
 
 Gunna write an interpreter for [GLOBAL][1] in Go. Because of reasons.
