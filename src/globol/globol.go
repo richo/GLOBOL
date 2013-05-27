@@ -30,7 +30,7 @@ func lex(file *os.File) {
     /* first_token := token_list */
 
     for {
-        fmt.Println(string(current_token.Content))
+        fmt.Println(current_token.Type, string(current_token.Content))
 
         current_token = current_token.Next
         if (current_token == nil) {
