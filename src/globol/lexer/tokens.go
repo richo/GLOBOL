@@ -24,10 +24,9 @@ const (
 const (
     MARK_NEWLINE = 10
     MARK_SPACE = 32
+    MARK_INDENT = MARK_SPACE
     MARK_COMMA = 44
 )
-
-const MARK_INDENT = MARK_SPACE
 
 func IsAtomSeperator(c byte) bool {
     var (
