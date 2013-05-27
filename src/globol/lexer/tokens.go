@@ -15,6 +15,7 @@ const (
 )
 
 const (
+    _ = iota // Burn zero, or you'll wind up looking like an idiot
     CTX_NEWLINE = iota // Always first, treated as a mask
     CTX_MAIN = iota
     CTX_FUNC = iota
