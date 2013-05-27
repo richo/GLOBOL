@@ -118,7 +118,9 @@ func main() {
             /** END STRING HANDLING **/
 
             if lexer.IsAtomSeperator(char) {
-                push_atom(lexer.TOK_ATOM, atom_buffer.Bytes(), true)
+                if (atom_buffer.Len() > 0) {
+                    push_atom(lexer.TOK_ATOM, atom_buffer.Bytes(), true)
+                }
                 if (char == lexer.MARK_NEWLINE) {
                     ctx[ctx_depth] = ctx[ctx_depth] | lexer.CTX_NEWLINE
                     push_atom(lexer.TOK_ENDSTATEMENT, []byte(";;"), false)
