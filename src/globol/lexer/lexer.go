@@ -73,7 +73,8 @@ func Lex(file *os.File) *Token {
 
     push_atom := func(tok_type int, content []byte, reset bool) {
         current_token.Type = tok_type
-        current_token.Content = content
+        /* dup(2) ... how does it work in go? */
+        current_token.Content = []byte(string(content))
         advance_token()
         if (reset) {
             new_atom_buffer()
