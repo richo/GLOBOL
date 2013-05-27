@@ -83,6 +83,10 @@ func main() {
         }
     }
 
+    start_of_line := func() bool {
+        return ctx[ctx_depth] & lexer.CTX_NEWLINE == lexer.CTX_NEWLINE
+    }
+
     file, _ = os.Open(os.Args[1])
     for {
         n, err := file.Read(buf)
@@ -117,24 +121,30 @@ func main() {
 
             /** END STRING HANDLING **/
 
-            if lexer.IsAtomSeperator(char) {
-                if (atom_buffer.Len() > 0) {
-                    push_atom(lexer.TOK_ATOM, atom_buffer.Bytes(), true)
+            if (lexer.IsAtomSeperator(char)) {
+                if !(char == lexer.MARK_INDENT && start_of_line()) {
+                    if (atom_buffer.Len() > 0) {
+                        push_atom(lexer.TOK_ATOM, atom_buffer.Bytes(), true)
+                    }
+                    if (char == lexer.MARK_NEWLINE) {
+                        ctx[ctx_depth] = ctx[ctx_depth] | lexer.CTX_NEWLINE
+                        push_atom(lexer.TOK_ENDSTATEMENT, []byte(";;"), false)
+                    }
+                    continue
                 }
-                if (char == lexer.MARK_NEWLINE) {
-                    ctx[ctx_depth] = ctx[ctx_depth] | lexer.CTX_NEWLINE
-                    push_atom(lexer.TOK_ENDSTATEMENT, []byte(";;"), false)
-                }
-                continue
             }
 
             /* Safe to assume we're not in a string */
 
-            if (ctx[ctx_depth] & lexer.CTX_NEWLINE == lexer.CTX_NEWLINE) {
-                if (char == lexer.MARK_INDENT) &&
-                    look_back(1) == lexer.MARK_INDENT {
+            if (start_of_line()) {
+                if (char == lexer.MARK_INDENT) {
+                    if (look_back(1) == lexer.MARK_INDENT) {
                         push_atom(lexer.TOK_INDENT, []byte("||"), true)
                         continue
+                    }
+                } else {
+                    ctx[ctx_depth] = ctx[ctx_depth] & ^lexer.CTX_NEWLINE
+                    // Not an indent, start of line, drop out of NL context
                 }
             }
 
