@@ -15,6 +15,7 @@ import (
 func usage() {
     fmt.Println("Usage:")
     fmt.Println("  globol lex <file>        : Lex file and print to stdout")
+    fmt.Println("  globol parse <file>      : Parse file and print to stdout")
     os.Exit(1)
 }
 
@@ -39,6 +40,16 @@ func lex(file *os.File) {
     }
 }
 
+func parse(file *os.File) {
+    var (
+        token_list *lexer.Token
+    )
+
+    token_list = lexer.Lex(file)
+
+    fmt.Println(token_list)
+}
+
 func main() {
     var (
         file *os.File
@@ -47,5 +58,11 @@ func main() {
     if (os.Args[1] == "lex") {
         file, _ = os.Open(os.Args[2])
         lex(file)
+    } else
+    if (os.Args[1] == "parse") {
+        file, _ = os.Open(os.Args[2])
+        parse(file)
+    } else {
+        usage()
     }
 }
