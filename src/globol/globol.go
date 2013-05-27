@@ -12,12 +12,16 @@ import (
     "globol/lexer"
 )
 
-func main() {
+func usage() {
+    fmt.Println("Usage:")
+    fmt.Println("  globol lex <file>        : Lex file and print to stdout")
+    os.Exit(1)
+}
+
+func lex(file *os.File) {
     var (
-        file *os.File
         token_list *lexer.Token
     )
-    file, _ = os.Open(os.Args[1])
 
     token_list = lexer.Lex(file)
 
@@ -32,5 +36,16 @@ func main() {
         if (current_token == nil) {
             break
         }
+    }
+}
+
+func main() {
+    var (
+        file *os.File
+    )
+
+    if (os.Args[1] == "lex") {
+        file, _ = os.Open(os.Args[2])
+        lex(file)
     }
 }
