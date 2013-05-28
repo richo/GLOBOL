@@ -10,6 +10,7 @@ import (
     "os"
     "fmt"
     "globol/lexer"
+    "globol/parser"
 )
 
 func usage() {
@@ -43,11 +44,12 @@ func lex(file *os.File) {
 func parse(file *os.File) {
     var (
         token_list *lexer.Token
+        ast *parser.AST
     )
-
     token_list = lexer.Lex(file)
+    ast = parser.Parse(token_list)
 
-    fmt.Println(token_list)
+    fmt.Println(ast)
 }
 
 func main() {

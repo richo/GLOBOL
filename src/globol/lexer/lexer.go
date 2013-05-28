@@ -67,6 +67,7 @@ func Lex(file *os.File) *Token {
 
     advance_token := func() {
         new_tok := new(Token)
+        new_tok.Next = nil
         current_token.Next = new_tok
         current_token = new_tok
     }
